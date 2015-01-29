@@ -29,9 +29,10 @@ Except as contained in this notice, the name(s) of the above copyright
 holders shall not be used in advertising or otherwise to promote the sale,
 use or other dealings in this Software without prior written authorization.
 '''
-from gi.repository import Gtk
 import os
 import sys
+
+from gi.repository import Gtk
 
 def get_file(filename):
     return os.path.join(os.path.dirname(os.path.realpath(__file__)), 

@@ -236,6 +236,20 @@ use or other dealings in this Software without prior written authorization.
               </packing>
             </child>
             <child>
+              <object class="GtkToolButton" id="webcam">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">webcam</property>
+                <property name="use_underline">True</property>
+                <property name="stock_id">gtk-connect</property>
+                <signal name="clicked" handler="_onWebcam" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
               <object class="GtkMenuToolButton" id="toolbutton2">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>

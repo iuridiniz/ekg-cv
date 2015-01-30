@@ -119,6 +119,8 @@ class MainWindow(MyBuilderHandler):
         super(MainWindow, self).__init__(*args, **kwargs)
         
         self._image = None
+        # self._usingwebcam = False
+        
     def show(self):
         self._window.show_all()
         
@@ -132,6 +134,14 @@ class MainWindow(MyBuilderHandler):
             # display on UI
             self._ekg.set_from_pixbuf(image2pixbuf(self._image))
     
+    def openWebcam(self):
+        pass
+        # TODO: get a working webcam in order to implement
+        # if self._usingwebcam:
+        #    return
+        # cameraCapture = cv2.VideoCapture(0)
+        # self._usingwebcam = True
+    
     def showOpen(self, cancelAction=None):
         OpenDialog().show(self._onFileSelected, cancelAction)
         
@@ -142,6 +152,10 @@ class MainWindow(MyBuilderHandler):
     def _onQuit(self, *args, **kwargs):
         print "Quit: args=%s, kwargs=%s" % (args, kwargs)
         Gtk.main_quit()
+        
+    def _onWebcam(self, *args, **kwargs):
+        print "Webcam: args=%s kwargs=%s" % (args, kwargs)
+        self.openWebcam()
         
     def _onFileSelected(self, *args, **kwargs):
         print "FileSelected: args=%s, kwargs=%s" % (args, kwargs)

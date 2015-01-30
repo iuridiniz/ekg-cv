@@ -37,7 +37,7 @@ import cv2
 from gi.repository import Gtk, GdkPixbuf
 
 def get_file(filename):
-    return os.path.join(os.path.dirname(os.path.realpath(__file__)), 
+    return os.path.join(os.path.dirname(os.path.realpath(__file__)),
         filename)
     
 # Workaround for bug http://stackoverflow.com/a/28236548/1522342 when using
@@ -63,7 +63,7 @@ class MyBuilderHandler(object):
     def __init__(self):
         self._builder = Gtk.Builder()
         if len(self.WIDGETS):
-            self._builder.add_objects_from_file(get_file(self.GLADE_FILE), 
+            self._builder.add_objects_from_file(get_file(self.GLADE_FILE),
                                                 self.WIDGETS.keys())
 
         for from_name, to_name in self.WIDGETS.iteritems():
@@ -95,15 +95,14 @@ class OpenDialog(MyBuilderHandler):
         return self.dialog.get_filename()
         
     def _onOpen(self, *args, **kwargs):
-        print "Open: args=%s, kwargs=%s" %(args, kwargs)
+        print "Open: args=%s, kwargs=%s" % (args, kwargs)
         if callable(self._openAction):
             self._openAction(dialog=self, filename=self.get_filename())
         else:
             self.hide()
     
-    
     def _onCancel(self, *args, **kwargs):
-        print "Cancel: args=%s, kwargs=%s" %(args, kwargs)
+        print "Cancel: args=%s, kwargs=%s" % (args, kwargs)
         
         if callable(self._cancelAction):
             self._cancelAction(*args, **kwargs)
@@ -113,7 +112,7 @@ class OpenDialog(MyBuilderHandler):
         
     
 class MainWindow(MyBuilderHandler):
-    WIDGETS = {"main_window": "_window", 
+    WIDGETS = {"main_window": "_window",
                "ekg_image": "_ekg"}
     
     def __init__(self, *args, **kwargs):
@@ -130,22 +129,22 @@ class MainWindow(MyBuilderHandler):
         
     def updateDisplay(self):
         if not self._image is None:
-            #display on UI
+            # display on UI
             self._ekg.set_from_pixbuf(image2pixbuf(self._image))
     
     def showOpen(self, cancelAction=None):
         OpenDialog().show(self._onFileSelected, cancelAction)
         
     def _onOpen(self, *args, **kwargs):
-        print "Open: args=%s, kwargs=%s" %(args, kwargs)
+        print "Open: args=%s, kwargs=%s" % (args, kwargs)
         OpenDialog().show(self._onFileSelected)
         
     def _onQuit(self, *args, **kwargs):
-        print "Quit: args=%s, kwargs=%s" %(args, kwargs)
+        print "Quit: args=%s, kwargs=%s" % (args, kwargs)
         Gtk.main_quit()
         
     def _onFileSelected(self, *args, **kwargs):
-        print "FileSelected: args=%s, kwargs=%s" %(args, kwargs)
+        print "FileSelected: args=%s, kwargs=%s" % (args, kwargs)
         filename = kwargs.get("filename")
         dialog = kwargs.get("dialog")
         if dialog:

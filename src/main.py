@@ -104,7 +104,7 @@ class MainWindow(MyBuilderHandler):
     def show(self):
         self._window.show_all()
         
-    def show_open(self, cancelAction=None):
+    def showOpen(self, cancelAction=None):
         OpenDialog().show(self._onFileSelected, cancelAction)
         
     def _onOpen(self, *args, **kwargs):
@@ -134,7 +134,7 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         window.openEkg(sys.argv[1])
     else:
-        window.show_open(Gtk.main_quit)
+        window.showOpen(Gtk.main_quit)
     window.show()
     
     Gtk.main()

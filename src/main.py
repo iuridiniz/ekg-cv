@@ -32,11 +32,29 @@ use or other dealings in this Software without prior written authorization.
 import os
 import sys
 
-from gi.repository import Gtk
+import cv2
+
+from gi.repository import Gtk, GdkPixbuf
 
 def get_file(filename):
     return os.path.join(os.path.dirname(os.path.realpath(__file__)), 
         filename)
+    
+# Workaround for bug http://stackoverflow.com/a/28236548/1522342 when using
+# gobject introspection and gtk < 3.14
+# Shared at: http://stackoverflow.com/a/28236548/1522342
+def image2pixbuf(im):
+    # convert image from BRG to RGB (pnm uses RGB)
+    im2 = cv2.cvtColor(im, cv2.cv.CV_BGR2RGB)
+    # get image dimensions
+    height, width = im2.shape[0:2]
+    pixl = GdkPixbuf.PixbufLoader.new_with_type('pnm')
+    # P6 is the magic number of PNM format,
+    # and 255 is the max color allowed, see [2]
+    pixl.write("P6 %d %d 255 " % (width, height) + im2.tostring())
+    pix = pixl.get_pixbuf()
+    pixl.close()
+    return pix
 
 class MyBuilderHandler(object):
     GLADE_FILE = "main.glade"
@@ -101,9 +119,20 @@ class MainWindow(MyBuilderHandler):
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
         
+        self._image = None
     def show(self):
         self._window.show_all()
         
+    def openEkg(self, filename):
+        # open using cv2
+        self._image = cv2.imread(filename)
+        self.updateDisplay()
+        
+    def updateDisplay(self):
+        if not self._image is None:
+            #display on UI
+            self._ekg.set_from_pixbuf(image2pixbuf(self._image))
+    
     def showOpen(self, cancelAction=None):
         OpenDialog().show(self._onFileSelected, cancelAction)
         
@@ -115,9 +144,6 @@ class MainWindow(MyBuilderHandler):
         print "Quit: args=%s, kwargs=%s" %(args, kwargs)
         Gtk.main_quit()
         
-    def openEkg(self, filename):
-        self._ekg.set_from_file(filename)
-    
     def _onFileSelected(self, *args, **kwargs):
         print "FileSelected: args=%s, kwargs=%s" %(args, kwargs)
         filename = kwargs.get("filename")

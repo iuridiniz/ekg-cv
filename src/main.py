@@ -45,7 +45,7 @@ def get_file(filename):
 # Shared at: http://stackoverflow.com/a/28236548/1522342
 def image2pixbuf(im):
     # convert image from BRG to RGB (pnm uses RGB)
-    im2 = cv2.cvtColor(im, cv2.cv.CV_BGR2RGB)
+    im2 = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
     # get image dimensions
     height, width = im2.shape[0:2]
     pixl = GdkPixbuf.PixbufLoader.new_with_type('pnm')

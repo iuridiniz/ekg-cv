@@ -58,14 +58,22 @@ def image2pixbuf(im):
 
 class MyBuilderHandler(object):
     GLADE_FILE = "main.glade"
-    WIDGETS = {}
-    DEFAULT_WIDGET_PREFIX = "_" 
+    WIDGETS = None # Must be a dict or None. TODO: support list
+    DEFAULT_WIDGET_PREFIX = "_"
     def __init__(self):
         self._builder = Gtk.Builder()
-        if len(self.WIDGETS):
+        
+        # Load widgets
+        if self.WIDGETS is None:
+            # load all objects
+            self._builder.add_from_file(get_file(self.GLADE_FILE),)
+            self.WIDGETS = dict((Gtk.Buildable.get_name(w), None)
+                            for w in self._builder.get_objects())
+        
+        elif len(self.WIDGETS):
             self._builder.add_objects_from_file(get_file(self.GLADE_FILE),
                                                 self.WIDGETS.keys())
-
+        
         for from_name, to_name in self.WIDGETS.iteritems():
             attr_name = to_name if to_name else self.DEFAULT_WIDGET_PREFIX + from_name
             if (hasattr(self, attr_name)):

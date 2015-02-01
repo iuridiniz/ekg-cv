@@ -131,6 +131,9 @@ class MainWindow(MyBuilderHandler):
         
     def show(self):
         self._window.show_all()
+    
+    def hide(self):
+        self._window.hide()
         
     def openEkg(self, filename):
         # open using cv2
@@ -159,7 +162,9 @@ class MainWindow(MyBuilderHandler):
         
     def _onQuit(self, *args, **kwargs):
         print "Quit: args=%s, kwargs=%s" % (args, kwargs)
+        self.hide()
         Gtk.main_quit()
+        return True
         
     def _onWebcam(self, *args, **kwargs):
         print "Webcam: args=%s kwargs=%s" % (args, kwargs)

@@ -260,19 +260,21 @@ use or other dealings in this Software without prior written authorization.
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkCheckMenuItem" id="checkmenuitem2">
+                      <object class="GtkCheckMenuItem" id="filter_grade">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Filtro 1</property>
+                        <property name="label" translatable="yes">Grade</property>
                         <property name="use_underline">True</property>
+                        <signal name="toggled" handler="_onFilterGradeToggled" swapped="no"/>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkCheckMenuItem" id="checkmenuitem1">
+                      <object class="GtkCheckMenuItem" id="filter_ekg">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">FIltro 2</property>
+                        <property name="label" translatable="yes">EKG</property>
                         <property name="use_underline">True</property>
+                        <signal name="toggled" handler="_onFilterEkgToggled" swapped="no"/>
                       </object>
                     </child>
                   </object>

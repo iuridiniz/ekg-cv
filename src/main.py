@@ -179,6 +179,13 @@ class MainWindow(MyBuilderHandler):
         if filename:
             self.openEkg(filename)
             
+    
+    def _onFilterEkgToggled(self, *args, **kwargs):
+        print "EkgToggled: args=%s, kwargs=%s" % (args, kwargs)
+        
+    def _onFilterGradeToggled(self, *args, **kwargs):
+        print "GradeToggled: args=%s, kwargs=%s" % (args, kwargs)
+            
 
 if __name__ == '__main__':
     window = MainWindow()

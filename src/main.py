@@ -44,14 +44,23 @@ def get_file(filename):
 # gobject introspection and gtk < 3.14
 # Shared at: http://stackoverflow.com/a/28236548/1522342
 def image2pixbuf(im):
-    # convert image from BRG to RGB (pnm uses RGB)
-    im2 = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
     # get image dimensions
-    height, width = im2.shape[0:2]
+    height, width, depth = (im.shape + (1,))[0:3]
+    # P5 and P6 are the magic numbers for PGM and PPM formats, respectively 
+    if depth == 3:
+        # convert image from BRG to RGB (pnm uses RGB)
+        im2 = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
+        format_ = "P6"
+    elif depth == 1:
+        # GRAY image, do nothing
+        im2 = im
+        format_ = "P5"
+    else:
+        return
+
     pixl = GdkPixbuf.PixbufLoader.new_with_type('pnm')
-    # P6 is the magic number of PNM format,
-    # and 255 is the max color allowed, see [2]
-    pixl.write("P6 %d %d 255 " % (width, height) + im2.tostring())
+    # and 255 is the max color allowed, see http://en.wikipedia.org/wiki/Netpbm_format#File_format_description        
+    pixl.write("%s %d %d 255 " % (format_, width, height) + im2.tostring())
     pix = pixl.get_pixbuf()
     pixl.close()
     return pix

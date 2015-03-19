@@ -134,7 +134,7 @@ def isolate_ekg(im):
 
 class MyBuilderHandler(object):
     GLADE_FILE = "main.glade"
-    WIDGETS = None # Must be a dict or None. TODO: support list
+    WIDGETS = None  # Must be a dict or None. TODO: support list
     DEFAULT_WIDGET_PREFIX = "_"
     def __init__(self):
         self._builder = Gtk.Builder()
@@ -197,7 +197,9 @@ class OpenDialog(MyBuilderHandler):
     
 class MainWindow(MyBuilderHandler):
     WIDGETS = {"main_window": "_window",
-               "ekg_image": "_ekg"}
+               "ekg_image": "_ekg",
+               "filter_grade": "_filter_grade",
+               "filter_ekg": "_filter_ekg"}
     
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
@@ -218,8 +220,20 @@ class MainWindow(MyBuilderHandler):
         
     def updateDisplay(self):
         if not self._image is None:
+            
+            image = self._image.copy()
+            if self._filter_grade.get_active():
+                image = isolate_grade(image)
+                dist = grade_get_distances(image, max_interactions=-1)
+                print "Distances"
+                print "size: %d| mean: %d | moda: %d | max: %d | min: %d" %(
+                    np.size(dist), np.mean(dist), np.bincount(dist).argmax(),
+                    np.max(dist), np.min(dist))
+            
+            if self._filter_ekg.get_active():
+                image = isolate_ekg(image)
             # display on UI
-            self._ekg.set_from_pixbuf(image2pixbuf(self._image))
+            self._ekg.set_from_pixbuf(image2pixbuf(image))
     
     def openWebcam(self):
         pass
@@ -256,12 +270,11 @@ class MainWindow(MyBuilderHandler):
             self.openEkg(filename)
             
     
-    def _onFilterEkgToggled(self, *args, **kwargs):
-        print "EkgToggled: args=%s, kwargs=%s" % (args, kwargs)
+    def _onFilterEkgToggled(self, item):
+        self.updateDisplay()
         
-    def _onFilterGradeToggled(self, *args, **kwargs):
-        print "GradeToggled: args=%s, kwargs=%s" % (args, kwargs)
-            
+    def _onFilterGradeToggled(self, item):
+        self.updateDisplay()
 
 if __name__ == '__main__':
     window = MainWindow()
@@ -273,5 +286,3 @@ if __name__ == '__main__':
     window.show()
     
     Gtk.main()
-
-    

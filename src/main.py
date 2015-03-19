@@ -65,6 +65,22 @@ def image2pixbuf(im):
     pixl.close()
     return pix
 
+def imshow(name, im):
+    
+    window = Gtk.Window()
+    
+    window.set_title(name)
+    pixbuf = image2pixbuf(im)
+    
+    container = Gtk.Image()
+    
+    container.set_from_pixbuf(pixbuf)
+    
+    window.add(container)
+
+    window.show_all()
+    
+
 class MyBuilderHandler(object):
     GLADE_FILE = "main.glade"
     WIDGETS = None # Must be a dict or None. TODO: support list

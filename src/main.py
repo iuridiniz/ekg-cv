@@ -33,6 +33,7 @@ import os
 import sys
 
 import cv2
+import numpy as np
 
 from gi.repository import Gtk, GdkPixbuf
 
@@ -80,6 +81,56 @@ def imshow(name, im):
 
     window.show_all()
     
+
+def isolate_grade(im):
+    hsv = cv2.cvtColor(im, cv2.COLOR_BGR2HSV)
+    lower_red = np.array([0, 100, 100])
+    upper_red = np.array([15, 255, 255])
+    mask_red = cv2.inRange(hsv, lower_red, upper_red)
+    
+    #mask2 = np.where(mask_red == 255, 1, 255).astype('uint8')
+    res = cv2.bitwise_not(mask_red)
+    
+    return cv2.cvtColor(res, cv2.COLOR_GRAY2BGR)
+
+def grade_get_distances(im, match_val = 0, max_interactions=-1):
+    # assume 
+    pos = 0
+    height, width, depth = im.shape
+    prev = -1
+    last_pos = -1
+    distances = []
+    
+    for pos, val in enumerate(im.flatten()):
+        if pos % depth != 0:
+            # use only the first rgb/bgr value (it's a gray image)
+            continue
+        #print "%6d: %3d | last_pos: %6d | distances: %s" %(pos, val, last_pos, distances)
+        if len(distances) == max_interactions:
+            # enough
+            break
+        if pos % (depth * width) == 0:
+            # new line, reset prev
+            prev = -1
+            last_pos = -1
+        if val != prev and val == match_val:
+            # if found a new match_val, calculate the distance to previous pos
+            if last_pos != -1: # has previous pos?
+                diff = pos - last_pos
+                distances.append(diff)
+            last_pos = pos
+        prev = val
+    
+    return distances
+
+def isolate_ekg(im):
+    hsv = cv2.cvtColor(im, cv2.COLOR_BGR2HSV)
+    lower_black = np.array([0, 0, 0])
+    upper_black = np.array([15, 25, 75])
+    mask_black = cv2.inRange(hsv, lower_black, upper_black)
+    
+    res = cv2.bitwise_not(mask_black)
+    return cv2.cvtColor(res, cv2.COLOR_GRAY2BGR)
 
 class MyBuilderHandler(object):
     GLADE_FILE = "main.glade"

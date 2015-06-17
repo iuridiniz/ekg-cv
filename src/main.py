@@ -126,7 +126,7 @@ def grade_get_distances(im, match_val = 0, max_interactions=-1):
 def isolate_ekg(im):
     hsv = cv2.cvtColor(im, cv2.COLOR_BGR2HSV)
     lower_black = np.array([0, 0, 0])
-    upper_black = np.array([15, 25, 75])
+    upper_black = np.array([255, 255, 100])
     mask_black = cv2.inRange(hsv, lower_black, upper_black)
     
     res = cv2.bitwise_not(mask_black)
